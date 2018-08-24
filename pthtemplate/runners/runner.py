@@ -28,12 +28,12 @@ class Runner:
         """
         self._loggings.append((condition, logging))
 
-    def _body(self, epoch, iteration, kwargs):
+    def _body(self, epoch, iteration, update, **kwargs):
         raise NotImplementedError
 
     def apply(self, epoch, iteration, device=None):
         kwargs = {}
-        self._body(epoch, iteration, kwargs)
+        self._body(epoch, iteration, kwargs.update, kwargs)
 
         for condition, updating in self._updatings:
             if condition(epoch, iteration):
