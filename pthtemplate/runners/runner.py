@@ -16,7 +16,7 @@ class Runner:
         self._convertings = {}
         self._updatings = []
         self._loggings = []
-        
+
         self.network = network
         self.criterion = criterion
         self.optimizer = optimizer
@@ -50,12 +50,12 @@ class Runner:
         kwargs.update(source=source)
 
         target = source
-        target = self._convertings('target', target)
+        target = self._converting('target', target)
         kwargs.update(target=target)
 
         self.optimizer.zero_grad()
         output = network(*tuplize(source))
-        output = self._convertings('output', output)
+        output = self._converting('output', output)
         kwargs.update(output=output)
 
         loss = self.criterion(*tuplize(output), *tuplize(target))
