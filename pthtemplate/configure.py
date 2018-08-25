@@ -15,6 +15,12 @@ subparser = None
 opts = OrderedDict()
 args = None
 
+
+def create_parser(*pargs, **kwargs):
+    global parser
+    parser = argparse.ArgumentParser(*pargs, **kwargs)
+
+
 def add_argument(*pargs, **kwargs):
     """both parser and subparser"""
     global parser
@@ -48,7 +54,8 @@ class SubparserContext:
     def __enter__(self):
         global subparsers
         global subparser
-        assert subparsers is not None, 'Invalid subparsers, got None'
+        if subparsers is None:
+            subparsers = parser.add_subparsers()
         subparser = subparsers.add_parser(*self._pargs, **self._kwargs)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
