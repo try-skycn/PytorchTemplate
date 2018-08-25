@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='PytorchTemplate',
       version='0.0.0.1',
@@ -7,5 +7,5 @@ setup(name='PytorchTemplate',
       author='Tianyao Chen',
       author_email='try.skycn@Gmail.com',
       license='MIT',
-      packages=['pthtemplate'],
+      packages=find_packages(),
       zip_safe=False)
