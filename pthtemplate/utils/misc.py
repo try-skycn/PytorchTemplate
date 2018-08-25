@@ -8,7 +8,7 @@ def tuplize(*args):
             expanded.extend(x)
         else:
             expanded.append(x)
-    return tuple(x)
+    return tuple(expanded)
 
 def mkdir_p(path):
     import errno

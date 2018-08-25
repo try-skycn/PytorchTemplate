@@ -1,3 +1,4 @@
+import datetime
 import argparse
 from collections import OrderedDict
 from pprint import pprint
@@ -80,6 +81,14 @@ def accept_argument(key, value=None):
         opts[key] = getattr(args, key)
     else:
         opts[key] = value
+
+
+def get_exp_id(exp_name=None):
+    dt = datetime.datetime.now()
+    exp_id = '{}_{:02d}-{:02d}-{:02d}'.format(dt.date(), dt.hour, dt.minute, dt.second)
+    if exp_name is not None:
+        exp_name = '{}_{}'.format(exp_id, exp_name)
+    return exp_id
 
 
 def print_opts():

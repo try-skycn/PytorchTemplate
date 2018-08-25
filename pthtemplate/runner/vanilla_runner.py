@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 from .runner import Runner
+from ..utils.misc import tuplize
 
 
 class VanillaRunner(Runner):
@@ -27,17 +28,17 @@ class VanillaRunner(Runner):
         
         update(network=self.network, criterion=self.criterion)
 
-        source = iteration.data
-        source = self.convertings['source'](source)
+        source, target = iteration.data
+
+        source = self._convertings['source'](source)
         update(source=source)
 
-        target = source
-        target = self.convertings['target'](target)
+        target = self._convertings['target'](target)
         update(target=target)
 
         self.optimizer.zero_grad()
         output = network(*tuplize(source))
-        output = self.convertings['output'](output)
+        output = self._convertings['output'](output)
         update(output=output)
 
         loss = self.criterion(*tuplize(output), *tuplize(target))

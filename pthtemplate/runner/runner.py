@@ -33,7 +33,7 @@ class Runner:
 
     def apply(self, epoch, iteration, device=None):
         kwargs = {}
-        self._body(epoch, iteration, kwargs.update, kwargs)
+        self._body(epoch, iteration, kwargs.update, **kwargs)
 
         for condition, updating in self._updatings:
             if condition(epoch, iteration):
