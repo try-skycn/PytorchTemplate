@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def tuplize(*args):
@@ -10,13 +11,17 @@ def tuplize(*args):
             expanded.append(x)
     return tuple(expanded)
 
-def mkdir_p(path):
-    import errno
-    try:
+def mkdir_p(path, clear=False):
+    if os.path.exists(path):
+        if os.path.isdir(path):
+            if clear:
+                shutil.rmtree(path)
+                os.makedirs(path)
+                print('Directory {} recreated.'.format(path))
+            else:
+                print('Directory {} already exists.'.format(path))
+        else:
+            raise OSError('Path {} is not a directory.'.format(path))
+    else:
         os.makedirs(path)
         print('Created directory {}'.format(path))
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            print('Directory {} already exists.'.format(path))
-        else:
-            raise
