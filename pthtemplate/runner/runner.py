@@ -1,44 +1,37 @@
-import collections
-
-from ..utils.misc import tuplize
+from ..routine import Routine
+from ..updater import Updater
+from ..socket import Socket
 
 
 class Runner:
     def __init__(self):
-        self._convertings = collections.defaultdict(lambda: tuplize)
-        self._updatings = []
-        self._loggings = []
+        self._routine_list = []
+        self._updater_list = []
+        self._socket_list = []
 
-    def converting(self, key, mapping):
-        """
-        Set a converting when "key" is activated.
-        "mapping" should only accept positional arguments.
-        """
-        self._convertings[key] = mapping
+    def register(self, obj):
+        if isinstance(obj, Routine):
+            self._routine_list.append(obj)
+        elif isinstance(obj, Updater):
+            self._updater_list.append(obj)
+        elif isinstance(obj, Socket):
+            self._socket_list.append(obj)
+        else:
+            raise TypeError('Invalid type of obj to be registered, get {}.'.format(type(obj)))
 
-    def updating(self, condition, updating):
-        """
-        Set an "updating" with "condition".
-        """
-        self._updatings.append((condition, updating))
-
-    def logging(self, condition, logging):
-        """
-        Set an "logging" with "condition"
-        """
-        self._loggings.append((condition, logging))
-
-    def _body(self, epoch, iteration, update, **kwargs):
-        raise NotImplementedError
-
-    def apply(self, epoch, iteration, device=None):
+    def apply(self, epoch, iteration):
         kwargs = {}
-        self._body(epoch, iteration, kwargs.update, **kwargs)
+        for key, value in self.__dict__:
+            if not key.startswith('_'):
+                kwargs[key] = value
 
-        for condition, updating in self._updatings:
-            if condition(epoch, iteration):
-                updating(epoch, iteration, kwargs.update, **kwargs)
+        for routine in self._routine_list:
+            routine.apply(epoch, iteration, kwargs.update, **kwargs)
 
-        for condition, logging in self._loggings:
-            if condition(epoch, iteration):
-                logging(epoch, iteration, **kwargs)
+        for updater in self._updater_list:
+            if updater.condition(epoch, iteration):
+                updater.apply(epoch, iteration, kwargs.update, **kwargs)
+
+        if socket in self._socket_list:
+            if socket.condition(epoch, iteration):
+                socket.apply(epoch, iteration, **kwargs)

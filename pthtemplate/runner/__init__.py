@@ -1,2 +1,2 @@
-from . import runner
-from . import vanilla_runner
+from .runner import runner
+from .seq_runner import SeqRunner
