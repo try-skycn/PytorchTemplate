@@ -1,23 +1,21 @@
 class EpochObject(object):
-    def __init__(self, epoch, nepochs):
+    def __init__(self, epoch, length):
         super(EpochObject, self).__init__()
 
-        self.epoch = epoch
-        self.nepochs = nepochs
+        self._epoch = epoch
+        self._length = length
 
     def __int__(self):
-        return self.epoch
+        return self._epoch
 
     def __len__(self):
-        return self.nepochs
+        return self._length
 
 
 class Epoch(object):
-    def __init__(self, nepochs):
-        super(Epoch, self).__init__()
-
-        self.nepochs = nepochs
+    def __init__(self, length):
+        self._length = length
 
     def __iter__(self):
-        for i in range(self.nepochs):
-            yield EpochObject(epoch=i+1, nepochs=self.nepochs)
+        for i in range(self._length):
+            yield EpochObject(i+1, self._length)

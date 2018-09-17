@@ -1,34 +1,35 @@
 class IterationObject(object):
-    def __init__(self, iteration, niterations, data):
-        super(IterationObject, self).__init__()
-
-        self.iteration = iteration
-        self.niterations = niterations
-        self.data = data
+    def __init__(self, iteration, length, **kwargs):
+        self._iteration = iteration
+        self._length = length
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def __int__(self):
-        return self.iteration
+        return self._iteration
 
     def __len__(self):
-        return self.niterations
-
-    def __repr__(self):
-        keymap = ', '.join(["{}={}".format(key, repr(value)) for key, value in self.__dict__.items()
-                            if key not in {"iteration", "niterations"}])
-        return 'Iter({}/{}, {})'.format(self.iteration, self.niterations, keymap)
-
-    @property
-    def batch_size(self):
-        return len(self.data)
+        return self._length
 
 
 class Iteration(object):
-    def __init__(self, dataloader):
+    def __init__(self, epoch, **kwargs):
         super(Iteration, self).__init__()
 
-        self.dataloader = dataloader
-        self.niterations = len(dataloader)
+        self._epoch = epoch
+        items = list(kwargs.items())
+        self._keys = [k for k, _ in items]
+        self._iterators = [v for _, v in items]
+        self._length = None
+        for iterator in self._iterators:
+            try:
+                length = len(iterator)
+                if self._length is None or length < self._length:
+                    self._length = length
+            except TypeError:
+                pass
 
     def __iter__(self):
-        for i, data in enumerate(self.dataloader):
-            yield IterationObject(iteration=i+1, data=data, niterations=self.niterations)
+        for i, values in enumerate(zip(*self._iterators)):
+            kwargs = {k: v for k, v in zip(self._keys, values)}
+            yield IterationObject(i+1, self._length, **kwargs)
