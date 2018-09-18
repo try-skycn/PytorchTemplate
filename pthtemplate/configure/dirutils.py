@@ -8,8 +8,11 @@ def get_exper_id(exper_name):
         exper_name = '{}_{}'.format(exper_id, exper_name)
     return exper_id
 
-def get_dir(exper_name, subroot, subdir):
+def get_dir(exper_name, subroot, subdir=None):
     """
     Return $subroot/$exper_name/$subdir
     """
-    return os.path.join(os.getenv('HISTORY'), os.getenv('PROGRAM'), subroot, exper_name, subdir)
+    if subdir is None:
+        return os.path.join(os.getenv('HISTORY'), os.getenv('PROGRAM'), subroot, exper_name)
+    else:
+        return os.path.join(os.getenv('HISTORY'), os.getenv('PROGRAM'), subroot, exper_name, subdir)

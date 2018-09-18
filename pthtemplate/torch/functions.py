@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-__all__ = []
+__all__ = ['log_with_zeros']
 
 
 def log_with_zeros(x):

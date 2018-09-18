@@ -21,7 +21,7 @@ class Runner:
 
     def apply(self, epoch, iteration):
         kwargs = {}
-        for key, value in self.__dict__:
+        for key, value in self.__dict__.items():
             if not key.startswith('_'):
                 kwargs[key] = value
 
@@ -32,6 +32,6 @@ class Runner:
             if updater.condition(epoch, iteration):
                 updater.apply(epoch, iteration, kwargs.update, **kwargs)
 
-        if socket in self._socket_list:
+        for socket in self._socket_list:
             if socket.condition(epoch, iteration):
                 socket.apply(epoch, iteration, **kwargs)

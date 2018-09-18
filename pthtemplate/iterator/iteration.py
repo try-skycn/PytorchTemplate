@@ -1,5 +1,6 @@
 class IterationObject(object):
-    def __init__(self, iteration, length, **kwargs):
+    def __init__(self, epoch, iteration, length, **kwargs):
+        self._epoch = epoch
         self._iteration = iteration
         self._length = length
         for k, v in kwargs.items():
@@ -10,6 +11,11 @@ class IterationObject(object):
 
     def __len__(self):
         return self._length
+
+    @property
+    def global_step(self):
+        return self._length * (int(self._epoch) - 1) + self._iteration
+    
 
 
 class Iteration(object):
@@ -32,4 +38,4 @@ class Iteration(object):
     def __iter__(self):
         for i, values in enumerate(zip(*self._iterators)):
             kwargs = {k: v for k, v in zip(self._keys, values)}
-            yield IterationObject(i+1, self._length, **kwargs)
+            yield IterationObject(self._epoch, i+1, self._length, **kwargs)
